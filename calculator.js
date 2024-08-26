@@ -5,9 +5,8 @@ const toggleSignElement = document.getElementById("toggleSign");
 let currentExpression = "";
 
 function appendToDisplay(value) {
-    const lastChar = currentExpression.slice(-1);
-    if (!isNaN(lastChar) && value === '%') {
-        currentExpression = `${currentExpression} * 0.01`;
+    if (value == '√') {
+        currentExpression += value + '(';
     } else {
         currentExpression += value;
     }
@@ -15,6 +14,9 @@ function appendToDisplay(value) {
 }
 
 function calculate() {
+    // Replace '√' with 'Math.sqrt' before evaluation
+    currentExpression = currentExpression.replace('√', 'Math.sqrt');
+
     try {
         const result = eval(currentExpression);
         outputElement.textContent = result;
@@ -24,7 +26,15 @@ function calculate() {
 }
 
 function clearLastEntered() {
-    currentExpression = currentExpression.slice(0, -1);
+    currentExpression = currentExpression.replace('Math.sqrt', '√');
+    let len = currentExpression.length;
+    if (currentExpression.slice(len - 2, len) == '√(') {
+        currentExpression = currentExpression.slice(0, len - 2);
+    } else if (currentExpression == '') {
+        currentExpression = '0';
+    } else {
+        currentExpression = currentExpression.slice(0, -1);
+    }
     inputElement.textContent = currentExpression;
 }
 
@@ -34,21 +44,52 @@ function clearResult() {
     outputElement.textContent = "0";
 }
 
-function appendSqrt() {
-    currentExpression += "Math.sqrt(";
+function toggleSign() {
+    const expression = currentExpression.split('').reverse();
+
+    const func = ['+', '-', '(', ')', '%', '^', '*'];
+
+    let value = "";
+    let num = "";
+    let change = 0;
+    let nestedDepth = 0;
+
+    outerLoop:
+    for (let i of expression) {
+        for (let j of func) {
+            if (i === j) {
+                if (i == '+') {
+                    value += '-';
+                } else if (i == '-') {
+                    value += '+';
+                } else if (i == '(') {
+                    nestedDepth++;
+                } else if (i == ')') {
+                    nestedDepth--;
+                } else {
+                    value += i + '-';
+                    change += 1;
+                }
+                break outerLoop;
+            }
+        }
+        num = i + num;
+    }
+
+    if (nestedDepth > 0) {
+        value = value.slice(0, -1) + '(' + value.slice(-1) + ')';
+    }
+
+    value = value + num;
+
+    let len = currentExpression.length;
+    valueLen = value.length - change;
+
+    let left = currentExpression.slice(0, len - valueLen);
+    currentExpression = left + value;
+
     inputElement.textContent = currentExpression;
 }
 
-function toggleSign() {
-    toggleSignElement.classList.toggle("toggled");
-    const sliced = currentExpression.slice(-4,-1);
-    // console.log(sliced)
-    if (toggleSignElement.classList.contains("toggled")) {
-        currentExpression += "* -1";
-    } else if (sliced === "* -") {
-        currentExpression = currentExpression.slice(0,-4);
-    }
-    inputElement.textContent = currentExpression;
-}
 const enterButton = document.querySelector(".last-button");
 enterButton.addEventListener("click", calculate);

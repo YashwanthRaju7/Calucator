@@ -1,16 +1,22 @@
 body {
   background-color: #4d8ac7;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  height: 94vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 h1 {
   color: aliceblue;
   text-align: center;
   text-decoration: underline;
+  margin: 5px;
 }
 
 .container {
-  width: 280px;
+  width: 300px;
   margin: 0 auto;
   padding: 10px 10px 20px 10px;
   background-color: rgb(255, 255, 255);
@@ -36,13 +42,13 @@ p {
 }
 
 #input {
-  font-size: 16px;
+  font-size: 20px;
   text-align: left;
-  color: #4c89c6;
+  color: #006ad4;
 }
 
 #output {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: bold;
   text-align: right;
   color: #183b5f;
@@ -79,5 +85,5 @@ button {
 }
 
 .toggled {
-  font-size: 15px;
+  font-size: 20px;
 }
